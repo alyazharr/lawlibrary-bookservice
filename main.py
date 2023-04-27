@@ -1,8 +1,11 @@
 import uvicorn as uvicorn
 from fastapi import FastAPI
 
+from fastapi.middleware.cors import CORSMiddleware
 from config.celery_utils import create_celery
 from routers import send_email, Book
+
+
 
 def create_app() -> FastAPI:
     current_app = FastAPI(title="LAW TK2",
@@ -16,6 +19,20 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 celery = app.celery_app
 
 if __name__ == "__main__":
