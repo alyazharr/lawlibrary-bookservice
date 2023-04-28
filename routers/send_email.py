@@ -15,12 +15,6 @@ async def send_email(subject:str, recipient:str, message:str):
 
 @router.get("/bookreminder")
 async def reminder(time:str, recipient:str):
-    # now = datetime.datetime.now()
-    # end = now + datetime.timedelta(minutes=2)
-    # schedule.every(10).seconds.do(lambda: send_emailb('test','adirasayidina3@gmail.com', 'yaaa'))
-    # while end > datetime.datetime.now():
-    #     schedule.run_pending()
-    # return 'Done'
     task = reminder_schedule.apply_async(args=[time, recipient])
     return JSONResponse({"task_id": task.id})
 

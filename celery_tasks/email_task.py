@@ -30,13 +30,13 @@ def send_emaila(self, subject=str, recipient=str, message=str):
     server.quit()
     return 'Email has been sent'
 
-def send_emailb(subject=str, recipient=str, end=datetime.datetime):
+def send_emailb(buku:dict, subject=str, recipient=str, mulai=datetime.date, selesai=datetime.date):
     em = MIMEMultipart()
     # em = EmailMessage()
     em['From'] = email_sender
     em['To'] = recipient
     em['Subject'] = subject
-    html = get_html("a", end)
+    html = get_html(buku, mulai, selesai)
     em.attach(MIMEText(html, 'html'))
 
     server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -48,18 +48,19 @@ def send_emailb(subject=str, recipient=str, end=datetime.datetime):
 
 @shared_task(bind=True,autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 5},
              name='send_email:reminder_schedule')
-def reminder_schedule(self, time=str, recipient=str):
-    now = datetime.datetime.now()
-    end = now + datetime.timedelta(minutes=10)
+def reminder_schedule(self, buku:dict, mulai=str, selesai=str, recipient=str):
+    mulai = datetime.datetime.strptime(mulai, '%Y-%m-%d').date()
+    selesai = datetime.datetime.strptime(selesai, '%Y-%m-%d').date()
     
-    schedule.every(2).minutes.do(lambda: send_emailb('Peminjaman Buku', recipient, end))
-    while end > datetime.datetime.now():
+    # email pertama
+    schedule.every().day.do(lambda: send_emailb(buku, 'Reading Reminder Baru!', recipient, mulai, selesai))
+    while selesai > datetime.date.today():
         schedule.run_pending()
+    # email terakhir
     return 'All emails has been sent'
 
-def get_html(buku, pengembalian):
-    sisawaktu =  (pengembalian-datetime.datetime.now()).seconds
-    sisawaktu = sisawaktu//60
+def get_html(buku, mulai, selesai):
+    sisawaktu =  selesai - mulai
     html = """
 
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -266,7 +267,7 @@ def get_html(buku, pengembalian):
                                                             <tr>
                                                                 <td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="center">
                                                                 <!-- INI BAGIAN BUKU -->
-                                                                <img align="center" border="0" src=" " alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 290px;" width="290"/>
+                                                                <img align="center" border="0" src=" """+ buku['image_url_m']+""" " alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 290px;" width="290"/>
                                                                 
                                                                 </td>
                                                             </tr>
@@ -282,12 +283,12 @@ def get_html(buku, pengembalian):
                                                         <tr>
                                                         <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:'Raleway',sans-serif;" align="left">
                                                             
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">AUTHOR</h2>
-                                                            <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; color: white;">NAMA BUKU</h1>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">"""+ buku['author'] +"""</h2>
+                                                            <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; color: white;">"""+ buku['title']+"""</h1>
                                                             <br>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Tanggal Pengembalian:""" + pengembalian.strftime("%I:%M%p on %B %d, %Y")+ """</h2>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Skrg:""" + datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")+ """</h2>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Sisa Waktu: """ + str(sisawaktu) + """ menit</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Mulai Membaca:""" + str(mulai)+ """</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Target Selesai:""" + str(selesai) + """</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Sisa Waktu: """ + str(sisawaktu.days) + """ Hari</h2>
                                                         </td>
                                                         </tr>
                                                     </tbody>
