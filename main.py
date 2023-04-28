@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
 from config.celery_utils import create_celery
-from routers import send_email, Book
+from routers import send_email, Book, search
 
 
 
@@ -15,6 +15,7 @@ def create_app() -> FastAPI:
     current_app.celery_app = create_celery()
     current_app.include_router(send_email.router)
     current_app.include_router(Book.router)
+    current_app.include_router(search.router)
     return current_app
 
 
@@ -23,7 +24,6 @@ origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://localhost:3000",
-
 ]
 
 app.add_middleware(
