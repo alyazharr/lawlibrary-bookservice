@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 async def verify_jwt(token: str = Depends(oauth2_scheme)):
     payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    if datetime.fromtimestamp(payload.exp) < datetime.now():
+    if datetime.fromtimestamp(payload['exp']) > datetime.now():
         return User(**payload)
     else:
         raise HTTPException(
