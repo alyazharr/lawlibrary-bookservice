@@ -4,3 +4,7 @@ celery
 flower
 httpx
 pandas
+python-dotenv
+schedule
+supabase
+python-jose
