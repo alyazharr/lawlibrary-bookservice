@@ -27,6 +27,11 @@ async def getBookbyId(id:int):
         return "Buku tidak ditemukan."
     return books.data
 
+@router.get("/get-stock")
+async def getBookbyId(id:int):
+    books = supabase.table('bookshelf_book').select('stok', count='exact').eq('id', id).execute()
+    return books.data
+
 @router.get("/get-targetreminder")
 async def getTargetReminderbyId(id:int):
     data = supabase.table('targetmembaca').select('*', count='exact').eq('id', id).execute()
