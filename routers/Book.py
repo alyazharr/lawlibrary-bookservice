@@ -36,7 +36,7 @@ async def getTargetReminderbyId(id:int):
 #guys kalo emg butuh user tinggal naro -> user: User = Depends(verify_jwt), nanti klo mau akses datanya tinggal user.username atau user.email
 @router.post("/target-reminder")
 async def targetReminder(idbuku:int, selesai:str, user: User = Depends(verify_jwt)):
-    data, count = supabase.table('targetmembaca').insert({"selesai": selesai, "idbuku":idbuku, "user":user.email}).execute()
+    data, count = supabase.table('targetmembaca').insert({"selesai": selesai, "id_buku":idbuku, "email_user":user.email}).execute()
     buku = supabase.table('bookshelf_book').select('*', count='exact').eq('id', idbuku).execute()
     mulai = data[1][0]['created_at'][0:10]
     task = reminder_schedule.apply_async(args=[buku.data[0], mulai, selesai, user.email])
@@ -44,7 +44,7 @@ async def targetReminder(idbuku:int, selesai:str, user: User = Depends(verify_jw
 
 @router.post("/konfirmasi-pinjam")
 async def konfirmasiPinjam(idbuku:int, selesai:str, user: User = Depends(verify_jwt)):
-    data, count = supabase.table('peminjaman').insert({"selesai": str(selesai), "idbuku":idbuku, "user":user.email}).execute()
+    data, count = supabase.table('peminjaman').insert({"selesai": str(selesai), "id_buku":idbuku, "email_user":user.email}).execute()
     return data
 
 @router.get("/get-peminjaman")
