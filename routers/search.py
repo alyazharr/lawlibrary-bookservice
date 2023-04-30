@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 router = APIRouter(prefix='/search', tags=['Search'], responses={404: {"description": "Not found"}})
 
 load_dotenv() 
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+SUPABASE_URL = os.getenv('supabase_url')
+SUPABASE_KEY = os.getenv('supabase_key')
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
