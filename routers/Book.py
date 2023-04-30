@@ -17,7 +17,7 @@ key = os.getenv('supabase_key')
 supabase: Client = create_client(url, key)
 @router.get("/get-books")
 async def getBook():
-    books = supabase.table('bookshelf_book').select('*', count='exact').limit(2000).execute()
+    books = supabase.table('bookshelf_book').select('*', count='exact').limit(1000).execute()
     return books.data
 
 @router.get("/get-book-by-id")
