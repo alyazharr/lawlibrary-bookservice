@@ -2,7 +2,7 @@ from supabase import create_client, Client
 from fastapi import APIRouter
 import os
 from dotenv import load_dotenv
-load_dotenv('.env')
+load_dotenv()
 from celery_tasks.email_task import reminder_schedule
 from starlette.responses import JSONResponse
 import datetime
@@ -21,6 +21,11 @@ async def getBook():
 @router.get("/get-book-by-id")
 async def getBookbyId(id:int):
     books = supabase.table('bookshelf_book').select('*', count='exact').eq('id', id).execute()
+    return books.data
+
+@router.get("/get-stock")
+async def getBookbyId(id:int):
+    books = supabase.table('bookshelf_book').select('stok', count='exact').eq('id', id).execute()
     return books.data
 
 @router.get("/get-targetreminder")

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
 from config.celery_utils import create_celery
-from routers import send_email, Book
+from routers import send_email, Book, stock
 
 
 
@@ -15,6 +15,7 @@ def create_app() -> FastAPI:
     current_app.celery_app = create_celery()
     current_app.include_router(send_email.router)
     current_app.include_router(Book.router)
+    current_app.include_router(stock.router)
     return current_app
 
 
@@ -36,4 +37,4 @@ app.add_middleware(
 celery = app.celery_app
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", port=9000, reload=True)
+    uvicorn.run("main:app", port=8000, reload=True)
