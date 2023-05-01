@@ -65,8 +65,10 @@ async def search_books(keyword: Optional[str] = None):
         query_title = supabase.table('bookshelf_book').select('*').ilike('title', f'%{word}%').execute()
         query_author = supabase.table('bookshelf_book').select('*').ilike('author', f'%{word}%').execute()
         query_isbn = supabase.table('bookshelf_book').select('*').ilike('isbn', f'%{word}%').execute()
+        query_publisher = supabase.table('bookshelf_book').select('*').ilike('publisher', f'%{word}%').execute()
         response.extend(query_title.data)
         response.extend(query_author.data)
         response.extend(query_isbn.data)
+        response.extend(query_publisher.data)
 
     return list({book['id']: book for book in response}.values())
