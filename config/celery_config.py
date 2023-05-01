@@ -19,6 +19,7 @@ class BaseConfig:
         Queue("celery"),
         # custom queue
         Queue("send_email"),
+        Queue("book_recommendation"),
     )
 
     CELERY_TASK_ROUTES = (route_task,)

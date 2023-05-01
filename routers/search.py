@@ -41,6 +41,14 @@ def search_books_isbn(isbn: Optional[str] = None):
     response = query.execute()
     return response.data
 
+@router.get('/publisher')
+def search_books_publisher(publisher: Optional[str] = None):
+    query = supabase.table('bookshelf_book').select('*')
+    if publisher:
+        query = query.ilike('publisher', f'%{publisher}%')
+    response = query.execute()
+    return response.data
+
 @router.get("/")
 async def search_books(keyword: Optional[str] = None):
     response = []
