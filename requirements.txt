@@ -8,3 +8,5 @@ python-dotenv
 schedule
 supabase
 python-jose
+numpy
+scikit-learn
