@@ -1,8 +1,7 @@
 from datetime import datetime
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
-from pydantic import ValidationError
+from jose import jwt, ExpiredSignatureError
 from pydantic import BaseModel
 
 
@@ -18,15 +17,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 async def verify_jwt(token: str = Depends(oauth2_scheme)):
-    print("masuk")
-    print(token)
-    payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    print(payload)
-    if datetime.fromtimestamp(payload['exp']) > datetime.now():
-        return User(**payload)
-    else:
-        raise HTTPException(
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if datetime.fromtimestamp(payload['exp']) > datetime.now():
+            return User(**payload)
+    except ExpiredSignatureError:
+            raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+
