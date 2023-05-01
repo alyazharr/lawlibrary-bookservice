@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 from schemas.review_schemas import Review, ReviewCreate
 
 load_dotenv() 
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+SUPABASE_URL = os.getenv('supabase_url')
+SUPABASE_KEY = os.getenv('supabase_key')
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 

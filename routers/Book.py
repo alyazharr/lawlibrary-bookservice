@@ -27,11 +27,6 @@ async def getBookbyId(id:int):
         return "Buku tidak ditemukan."
     return books.data
 
-@router.get("/get-stock")
-async def getBookbyId(id:int):
-    books = supabase.table('bookshelf_book').select('stok', count='exact').eq('id', id).execute()
-    return books.data
-
 @router.get("/get-targetreminder")
 async def getTargetReminderbyId(id:int):
     data = supabase.table('targetmembaca').select('*', count='exact').eq('id', id).execute()
@@ -47,6 +42,16 @@ async def targetReminder(idbuku:int, selesai:str, user: User = Depends(verify_jw
     task = reminder_schedule.apply_async(args=[buku.data[0], mulai, selesai, user.email])
     return data
 
+@router.get("/get-targetreminder-user")
+async def getTargetReminderUser(user: User = Depends(verify_jwt)):
+    data = supabase.table('targetmembaca').select('*', count='exact').eq('email_user', user.email).execute()
+    if data.count == 0:
+        return "Data target reminder tidak ditemukan."
+    for datanya in data.data:
+        buku = await getBookbyId(datanya['id_buku'])
+        datanya['buku'] = buku
+    return data.data
+
 @router.post("/konfirmasi-pinjam")
 async def konfirmasiPinjam(idbuku:int, selesai:str, user: User = Depends(verify_jwt)):
     data, count = supabase.table('peminjaman').insert({"selesai": str(selesai), "id_buku":idbuku, "email_user":user.email}).execute()
@@ -57,4 +62,20 @@ async def getpeminjamanbyId(id:int):
     data = supabase.table('peminjaman').select('*', count='exact').eq('id', id).execute()
     if data.count == 0:
         return "Data peminjaman tidak ditemukan."
+    return data.data
+
+@router.get("/get-peminjaman-user")
+async def getpeminjamanUser(user: User = Depends(verify_jwt)):
+    data = supabase.table('peminjaman').select('*', count='exact').eq('email_user', user.email).execute()
+    if data.count == 0:
+        return "Data peminjaman tidak ditemukan."
+    for datanya in data.data:
+        buku = await getBookbyId(datanya['id_buku'])
+        datanya['buku'] = buku
+    return data.data
+
+@router.put("/konfirmasi-pengembalian")
+async def getpeminjamanUser(idpeminjaman:int, user: User = Depends(verify_jwt)):
+    data = supabase.table('peminjaman').update({ 'status': 'dikembalikan' }).match({'id':idpeminjaman, 'email_user':user.email}).execute()
+    print(data)
     return data.data
