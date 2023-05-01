@@ -43,11 +43,15 @@ def search_books_isbn(isbn: Optional[str] = None):
 
 @router.get("/")
 async def search_books(keyword: Optional[str] = None):
+    response = []
+    
     if not keyword:
-        return []
+        query_no_key = supabase.table('bookshelf_book').select('*').limit(1000).execute()
+        response.extend(query_no_key.data)
+        return response
+    
     split_query = keyword.split(' ')
     print(split_query)
-    response = []
 
     for word in split_query:
         query_title = supabase.table('bookshelf_book').select('*').ilike('title', f'%{word}%').execute()
@@ -57,5 +61,4 @@ async def search_books(keyword: Optional[str] = None):
         response.extend(query_author.data)
         response.extend(query_isbn.data)
 
-    # Remove duplicates
     return list({book['id']: book for book in response}.values())
