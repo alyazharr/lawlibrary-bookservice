@@ -43,6 +43,8 @@ async def create_review(book_id:int, review: ReviewCreate, user: User = Depends(
         "rating": review.rating, 
         "review_text": review.review_text
     }).execute()
+
+    print(data)
     
     data_dict = {
         'id': data[1][0]['id'],
@@ -78,7 +80,7 @@ def delete_review(review_id: int, user: User = Depends(verify_jwt)):
 
 @router.get("/avg-rate/{book_id}")
 def get_avg_rate(book_id: int):
-    book_data = supabase.table('bookshelf_book').select('rating').eq('id', book_id).execute()
+    book_data = supabase.table('bookshelf_book').select("*", count='exact').eq('id', book_id).execute()
     if len(book_data.data) == 0:
         return HTTPException(status_code=404, detail="Book ID Not Found")
     reviews =  supabase.table('book_review').select('rating').eq('book_id', book_id).execute()
