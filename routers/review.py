@@ -22,9 +22,10 @@ def get_reviews_by_user(user: User = Depends(verify_jwt)):
 
 @router.get("/book/{book_id}")
 def get_reviews_by_bookid(book_id: int):
-    reviews = supabase.table('book_review').select('*', count='exact').eq('book_id', book_id).execute()
-    if len(reviews.data) == 0:
+    book_data = supabase.table('bookshelf_book').select('*', count='exact').eq('id', book_id).execute()
+    if len(book_data.data) == 0:
         return HTTPException(status_code=404, detail="Book ID Not Found")
+    reviews = supabase.table('book_review').select('*', count='exact').eq('book_id', book_id).execute()
     return reviews.data
 
 @router.post("/add/{book_id}", response_model=Review)
@@ -32,9 +33,9 @@ async def create_review(book_id:int, review: ReviewCreate, user: User = Depends(
     if review.rating < 0 or review.rating > 5 or not review.review_text.strip():
         raise HTTPException(status_code=400, detail="Invalid Input. Unable to Add Review.")
     
-    reviews = supabase.table('book_review').select('*', count='exact').eq('book_id', book_id).execute()
-    if len(reviews.data) == 0:
-        raise HTTPException(status_code=404, detail="Book ID Not Found")
+    book_data = supabase.table('bookshelf_book').select('*', count='exact').eq('id', book_id).execute()
+    if len(book_data.data) == 0:
+        return HTTPException(status_code=404, detail="Book ID Not Found")
     
     data, count = supabase.table('book_review').insert({
         "book_id": book_id, 
@@ -77,9 +78,12 @@ def delete_review(review_id: int, user: User = Depends(verify_jwt)):
 
 @router.get("/avg-rate/{book_id}")
 def get_avg_rate(book_id: int):
-    reviews = supabase.table('book_review').select('rating').eq('book_id', book_id).execute()
-    if len(reviews.data) == 0:
+    book_data = supabase.table('bookshelf_book').select('rating').eq('id', book_id).execute()
+    if len(book_data.data) == 0:
         return HTTPException(status_code=404, detail="Book ID Not Found")
+    reviews =  supabase.table('book_review').select('rating').eq('book_id', book_id).execute()
+    if len(reviews.data) == 0:
+        return {"book_id": book_id, "avg_rating": 0}
     total_reviews = len(reviews.data)
     total_rating = sum([review['rating'] for review in reviews.data])
     avg_rating = round(total_rating/total_reviews, 1) if total_reviews != 0 else 0
