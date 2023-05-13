@@ -6,6 +6,7 @@ class ReviewCreate(BaseModel):
 
 class Review(BaseModel):
     id: int
+    created_at:str
     book_id: int
     user_id: str
     rating: float

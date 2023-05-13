@@ -2,6 +2,7 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 from config.jwt_utils import User, verify_jwt
 from starlette.responses import JSONResponse
+from datetime import datetime
 
 from supabase import create_client
 from dotenv import load_dotenv
@@ -36,6 +37,10 @@ async def create_review(book_id:int, review: ReviewCreate, user: User = Depends(
     book_data = supabase.table('bookshelf_book').select('*', count='exact').eq('id', book_id).execute()
     if len(book_data.data) == 0:
         return HTTPException(status_code=404, detail="Book ID Not Found")
+
+    data_review = supabase.table('book_review').select("*", count='exact').eq('book_id', book_id).eq('user_id', user.username).execute()
+    if len(data_review.data) != 0 :
+        raise HTTPException(status_code=409, detail="You Already Reviewed This Book. Please Check My Reviews Page.")
     
     data, count = supabase.table('book_review').insert({
         "book_id": book_id, 
@@ -44,8 +49,6 @@ async def create_review(book_id:int, review: ReviewCreate, user: User = Depends(
         "review_text": review.review_text
     }).execute()
 
-    print(data)
-    
     data_dict = {
         'id': data[1][0]['id'],
         'created_at': data[1][0]['created_at'][0:10],
