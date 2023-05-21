@@ -8,8 +8,8 @@ deploy:
     - apk update && apk add openssh-client
     - chmod 400 ${SSH_PRIV_KEY}
   script:
-    - ssh -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} agnes@34.133.211.90"
+    - ssh -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} agnes@34.133.211.90 "
       sudo bash testing.sh"
-    - ssh -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} agnes@34.68.143.87"
+    - ssh -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} agnes@34.68.143.87 "
       sudo bash testing.sh"
   
