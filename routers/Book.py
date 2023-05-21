@@ -172,13 +172,13 @@ async def getpeminjamanUser(user: User = Depends(verify_jwt)):
     return data.data
 
 @router.put("/konfirmasi-pengembalian")
-async def putPengembalian(idpeminjaman:int, user: User = Depends(verify_jwt)):
+async def putPengembalian(idpeminjaman:int, returndate:datetime.date, user: User = Depends(verify_jwt)):
     data = supabase.table('peminjaman').select('*', count='exact').eq('id', idpeminjaman).execute()
     if data.count == 0:
         raise HTTPException(status_code=404, detail="Peminjaman Item not found")
     if user.roles != 'admin':
         raise HTTPException(status_code=403, detail="Forbidden, user doesn't have permission to edit this Peminjaman.")
-    data = supabase.table('peminjaman').update({ 'status': 'dikembalikan' }).match({'id':idpeminjaman}).execute()
+    data = supabase.table('peminjaman').update({ 'status': 'dikembalikan', 'returned_date':str(returndate) }).match({'id':idpeminjaman}).execute()
     return data.data
 
 @router.put("/tolak-pengembalian")
@@ -192,7 +192,7 @@ async def putTolakPengembalian(idpeminjaman:int, user: User = Depends(verify_jwt
     return data.data
 
 @router.put("/ajukan-pengembalian")
-async def getpeminjamanUser(idpeminjaman:int, user: User = Depends(verify_jwt)):
+async def ajukanPengembalian(idpeminjaman:int, user: User = Depends(verify_jwt)):
     data = supabase.table('peminjaman').select('*', count='exact').eq('id', idpeminjaman).execute()
     if data.count == 0:
         raise HTTPException(status_code=404, detail="Peminjaman Item not found")
