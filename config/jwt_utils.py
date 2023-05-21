@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class User(BaseModel):
     username: str
     email: str
+    roles: str
 
 
 # Ini gatau cara masukin ke envnya guys, gw taro sini dlu aja yah

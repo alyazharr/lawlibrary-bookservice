@@ -195,7 +195,7 @@ def get_html_start(buku, mulai, selesai):
                                         
                                         <h1 class="v-text-align v-font-size" style="margin: 0px; color: #000000; line-height: 120%; text-align: center; word-wrap: break-word; font-family: 'Playfair Display',serif; font-size: 35px; "><strong>LibLAW</strong><br /></h1>
                                         <br>
-                                        <h2 style="margin: 0px; color: #000000; line-height: 120%; text-align: center; word-wrap: break-word; font-family: 'Playfair Display',serif; "><strong>Reading Target</strong></h2>
+                                        <h2 style="margin: 0px; color: #000000; line-height: 120%; text-align: center; word-wrap: break-word; font-family: 'Playfair Display',serif; "><strong>Your Reading Target has been Started!</strong></h2>
                                         
                                         
                                       </td>
@@ -283,7 +283,7 @@ def get_html_start(buku, mulai, selesai):
                                                             <tr>
                                                                 <td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="center">
                                                                 <!-- INI BAGIAN BUKU -->
-                                                                <img align="center" border="0" src=" """+ buku['image_url_m']+""" " alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 290px;" width="290"/>
+                                                                <img align="center" border="0" src=" """+ buku['image_url_l']+""" " alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 290px;" width="290"/>
                                                                 
                                                                 </td>
                                                             </tr>
@@ -302,9 +302,8 @@ def get_html_start(buku, mulai, selesai):
                                                             <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">"""+ buku['author'] +"""</h2>
                                                             <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; color: white;">"""+ buku['title']+"""</h1>
                                                             <br>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Mulai Membaca:""" + str(mulai)+ """</h2>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Target Selesai:""" + str(selesai) + """</h2>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Sisa Waktu: """ + str(sisawaktu.days) + """ Hari</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Start Date:""" + str(mulai)+ """</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">End Date:""" + str(selesai) + """</h2>
                                                         </td>
                                                         </tr>
                                                     </tbody>
@@ -551,7 +550,7 @@ def get_html(buku, mulai, selesai):
                                                             <tr>
                                                                 <td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="center">
                                                                 <!-- INI BAGIAN BUKU -->
-                                                                <img align="center" border="0" src=" """+ buku['image_url_m']+""" " alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 290px;" width="290"/>
+                                                                <img align="center" border="0" src=" """+ buku['image_url_l']+""" " alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 290px;" width="290"/>
                                                                 
                                                                 </td>
                                                             </tr>
@@ -570,9 +569,8 @@ def get_html(buku, mulai, selesai):
                                                             <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">"""+ buku['author'] +"""</h2>
                                                             <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; color: white;">"""+ buku['title']+"""</h1>
                                                             <br>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Mulai Membaca:""" + str(mulai)+ """</h2>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Target Selesai:""" + str(selesai) + """</h2>
-                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Sisa Waktu: """ + str(sisawaktu.days) + """ Hari</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">Start Date:""" + str(mulai)+ """</h2>
+                                                            <h2 class="v-text-align v-font-size" style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 18px; color: white;">End Date:""" + str(selesai) + """</h2>
                                                         </td>
                                                         </tr>
                                                     </tbody>
