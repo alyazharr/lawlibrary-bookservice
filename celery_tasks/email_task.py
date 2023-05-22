@@ -70,7 +70,7 @@ def reminder_schedule(self, buku:dict, mulai=str, selesai=str, recipient=str):
     
     send_email_start(buku, 'Reading Reminder!', recipient, mulai, selesai)
     schedule.every().day.do(lambda: send_emailb(buku, 'Reading Reminder!', recipient, mulai, selesai))
-    while selesai > datetime.date.today():
+    while selesai >= datetime.date.today():
         schedule.run_pending()
     # email terakhir
     return 'All emails has been sent'
