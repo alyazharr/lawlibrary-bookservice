@@ -28,7 +28,7 @@ sys.path.insert(0, ROOT_DIR)
 from celery_tasks.recommendation_task import predict_recommendation
 from config.celery_utils import get_task_info
 
-router = APIRouter(prefix='/book-recommendation', responses={404: {"description": "Not found"}})
+router = APIRouter(prefix='/book-recommendation', tags=['Book Recommendation'], responses={404: {"description": "Not found"}})
 
 @router.post('/')
 async def predict_book_recommendation(bookRecom: BookRecom) -> dict:

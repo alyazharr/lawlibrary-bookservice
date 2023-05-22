@@ -88,7 +88,7 @@ def predict_recommendation(self, title:str):
             books_df['Book-Title'] + ' ' + books_df['Book-Author'] + ' ' + books_df['Publisher']
         )
 
-        recommendations = recommend_books(title, tfidf_vectorizer, book_profiles, books_df)
+        recommendations = recommend_books(title, tfidf_vectorizer, book_profiles, books_df, books)
 
     return {'recommendations':recommendations}
 
@@ -103,13 +103,20 @@ def recommend(book_title, books, similarity_score, pt):
         item = []
         temp_df = books[books['Book-Title'] == pt.index[i[0]]]
         item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Title'].values))
-        # item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Author'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Author'].values))
         item.extend(list(temp_df.drop_duplicates('Book-Title')['ISBN'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Year-Of-Publication'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Publisher'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-L'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-M'].values))
+        item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-S'].values))
         
         data.append(item)
+    print(type(data))
     return data
 
-def recommend_books(book_title, tfidf_vectorizer, book_profiles, books_df ,top_n=5):
+        
+def recommend_books(book_title, tfidf_vectorizer, book_profiles, books_df , books, top_n=5):
     user_profile = tfidf_vectorizer.transform([book_title])
 
     # Calculate cosine similarity between user profile and all book profiles
@@ -128,9 +135,14 @@ def recommend_books(book_title, tfidf_vectorizer, book_profiles, books_df ,top_n
     recommended_books_list = []
     for book_id in recommended_books.index:
         book_info = {
-            'title': books_df.loc[book_id, 'Book-Title'],
-            # 'author': books_df.loc[book_id, 'Book-Author'],
-            'isbn': books_df.loc[book_id, 'ISBN'],
+            'title': books.loc[book_id, 'Book-Title'],
+            'author': books.loc[book_id, 'Book-Author'],
+            'isbn': books.loc[book_id, 'ISBN'],
+            'publication_year': books.loc[book_id, 'Year-Of-Publication'],
+            'publisher': books.loc[book_id, 'Publisher'],
+            'image_url_l': books.loc[book_id, 'Image-URL-L'],
+            'image_url_m': books.loc[book_id, 'Image-URL-M'],
+            'image_url_s': books.loc[book_id, 'Image-URL-S'],
         }
         recommended_books_list.append(book_info)
 
