@@ -1,10 +1,11 @@
 import uvicorn as uvicorn
 from fastapi import FastAPI
+import logging
+import sys
 
 from fastapi.middleware.cors import CORSMiddleware
 from config.celery_utils import create_celery
-from routers import send_email, Book, search, review, stock
-
+from routers import send_email, Book, search, review, stock, book_recommendation
 
 
 def create_app() -> FastAPI:
@@ -18,7 +19,8 @@ def create_app() -> FastAPI:
     current_app.include_router(stock.router)
     current_app.include_router(search.router)
     current_app.include_router(review.router)
-    
+    current_app.include_router(book_recommendation.router)
+
     return current_app
 
 
