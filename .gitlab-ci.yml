@@ -12,4 +12,6 @@ deploy:
       sudo bash testing.sh"
     - ssh -o StrictHostKeyChecking=no -i ${SSH_PRIV_KEY} agnes@34.68.143.87 "
       sudo bash testing.sh"
-  
+  only:
+    - main
+
