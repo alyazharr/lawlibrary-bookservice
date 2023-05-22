@@ -8,6 +8,7 @@ from typing import Optional
 
 from supabase import create_client
 from dotenv import load_dotenv
+import logging
 
 router = APIRouter(prefix='/search', tags=['Search'], responses={404: {"description": "Not found"}})
 
@@ -23,6 +24,7 @@ def search_books_author(title: Optional[str] = None):
     if title:
         query = query.ilike('title', f'%{title}%')
     response = query.execute()
+    logging.info(f'Search book\'s title endpoint by query {title} is successfully accessed.')
     return response.data
 
 @router.get("/author")
@@ -31,6 +33,7 @@ def search_books_title(author: Optional[str] = None):
     if author:
         query = query.ilike('author', f'%{author}%')
     response = query.execute()
+    logging.info(f'Search book\'s author endpoint by query {author} is successfully accessed.')
     return response.data
 
 @router.get('/isbn')
@@ -39,6 +42,7 @@ def search_books_isbn(isbn: Optional[str] = None):
     if isbn:
         query = query.ilike('isbn', f'%{isbn}%')
     response = query.execute()
+    logging.info(f'Search book\'s ISBN endpoint by query {isbn} is successfully accessed.')
     return response.data
 
 @router.get('/publisher')
@@ -47,6 +51,7 @@ def search_books_publisher(publisher: Optional[str] = None):
     if publisher:
         query = query.ilike('publisher', f'%{publisher}%')
     response = query.execute()
+    logging.info(f'Search book\'s publisher endpoint by query {publisher} is successfully accessed.')
     return response.data
 
 @router.get("/")
@@ -71,4 +76,5 @@ async def search_books(keyword: Optional[str] = None):
         response.extend(query_isbn.data)
         response.extend(query_publisher.data)
 
+    logging.info(f'Search book endpoint by query {keyword} is successfully accessed.')
     return list({book['id']: book for book in response}.values())
