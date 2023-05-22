@@ -37,6 +37,16 @@ async def getBookbyId(id:int):
 
 @router.get("/get-book-by-isbn")
 async def getBookbyISBN(isbn: str):
+    books = supabase.table('bookshelf_book').select('*', count='exact').eq('isbn', isbn).execute()
+    if books.count == 0:
+        logging.info('Get book by isbn failed, book with given id not found')
+
+        raise HTTPException(status_code=404, detail="Buku tidak ditemukan.")
+    logging.info('Get book by id endpoint successfully accessed')
+    return books.data
+    
+@router.get("/get-book-data-by-isbn")
+async def getBookDatabyISBN(isbn:str):
     books_df = pd.read_csv('data/Books.csv')
     # books = supabase.table('bookshelf_book').select('*', count='exact').eq('isbn', isbn).execute()
     books = books_df[books_df['ISBN'] == isbn]
@@ -48,11 +58,14 @@ async def getBookbyISBN(isbn: str):
 
         raise HTTPException(status_code=404, detail="Buku tidak ditemukan.")
     book_data = {
-        'title': books['Book-Title'],
+        'title': books['Book-Title'].values,
         'author': books['Book-Author'],
         'isbn': books['ISBN'],
         'publication_year': books['Year-Of-Publication'],
-        'publisher': books['Publisher']
+        'publisher': books['Publisher'],
+        'image_url_l': books['Image-URL-L'],
+        'image_url_m': books['Image-URL-M'],
+        'image_url_s': books['Image-URL-S']
     }
     logging.info('Get book by ISBN endpoint successfully accessed')
 
