@@ -25,8 +25,7 @@ async def getBookbyId(id:int):
 @router.put("/update")
 async def updateBookbyId(id:int, stok:int):
     updated_stock = supabase.table('bookshelf_book').update({"stok": stok}).eq('id', id).execute()
-    print(updated_stock)
-    if updated_stock:
+    if len(updated_stock.data)!=0:
         logging.info('The stock update was successful. The stock for the book with the given ID has already been changed.')
         return JSONResponse({'message': f"Stock with book id {id} Successfully Changed."})
     logging.info('Update stock failed, book with given id not found')
